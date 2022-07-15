@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using Valve.VR;
 
@@ -12,6 +13,8 @@ public class PlayAreaCornerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var error = EVRInitError.None;
+        OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
         OpenVR.Chaperone.ForceBoundsVisible(true);
         OpenVR.Chaperone.GetPlayAreaRect(ref playAreaRect);
         

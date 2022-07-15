@@ -73,4 +73,7 @@ crashlytics-build.properties
 
 
 /[Aa]ssets/[Ss]teamVR*
+/[Aa]ssets/StreamingAssets/[Ss]teamVR*
 /[Aa]ssets/XR*
+
+.idea

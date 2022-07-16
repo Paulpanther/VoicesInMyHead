@@ -14,13 +14,12 @@ public class TimePassedDetector : MonoBehaviour
     public UnityEvent doEveryTimeIfNotInHandNotInGoal;
     
     public InHandDetector handDetector;
-    public ObjectGoalProgression goalProgression;
     private Timer timer;
+    public bool externInGoal = false;
     
     void Start()
     {
         handDetector = GetComponent<InHandDetector>();
-        goalProgression = GetComponent<ObjectGoalProgression>();
         
         timer = new Timer(time);
         Action action = () => {};
@@ -32,7 +31,7 @@ public class TimePassedDetector : MonoBehaviour
             }
             if (!handDetector.inLeftHand && !handDetector.inRightHand)
             {
-                if (goalProgression.inGoal)
+                if (externInGoal)
                 {
                     doEveryTimeIfNotInHandInGoal.Invoke();
                 }

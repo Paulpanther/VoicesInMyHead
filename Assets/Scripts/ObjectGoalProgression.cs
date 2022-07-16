@@ -28,6 +28,8 @@ public class ObjectGoalProgression : MonoBehaviour
     public float lastRelDistanceCheckpoint;
     public float relDistance;
     public String lastEvent = "None";
+
+    public TimePassedDetector timePassedDetector = null;
     
     private Timer checkpointTimer = new Timer(1);
     private Timer inGoalTimer = new Timer(1);
@@ -37,6 +39,7 @@ public class ObjectGoalProgression : MonoBehaviour
     
     void Start()
     {
+        timePassedDetector = GetComponent<TimePassedDetector>();
         startTimer.Start(() =>
         {
             startPos = transform.position;
@@ -128,6 +131,7 @@ public class ObjectGoalProgression : MonoBehaviour
             inGoalTimer.Start(() =>
             {
                 inGoal = true;
+                if (timePassedDetector != null) timePassedDetector.externInGoal = true;
                 onGoalEnter.Invoke();
             });
         }
@@ -140,6 +144,7 @@ public class ObjectGoalProgression : MonoBehaviour
             inGoalTimer.Start(() =>
             {
                 inGoal = false;
+                if (timePassedDetector != null) timePassedDetector.externInGoal = false;
                 onGoalExit.Invoke();
             });
         }

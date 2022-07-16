@@ -11,12 +11,15 @@ public class InHandDetector : MonoBehaviour
     
     public UnityEvent leftHandPutdown;
     public UnityEvent rightHandPutdown;
+    
+    public UnityEvent anyHandPickup;
+    public UnityEvent anyHandPutdown;
 
     private bool possibleInLeftHand = false;
     private bool possibleInRightHand = false;
     
-    private bool inLeftHand = false;
-    private bool inRightHand = false;
+    public bool inLeftHand = false;
+    public bool inRightHand = false;
     
     private bool possibleNotInLeftHand = false;
     private bool possibleNotInRightHand = false;
@@ -38,12 +41,14 @@ public class InHandDetector : MonoBehaviour
             possibleInLeftHand = false;
             inLeftHand = true;
             leftHandPickup.Invoke();
+            anyHandPickup.Invoke();
         }
         if (possibleInRightHand && Time.time - rightHandCollisionTime > handPickupDelay)
         {
             possibleInRightHand = false;
             inRightHand = true;
             rightHandPickup.Invoke();
+            anyHandPickup.Invoke();
         }
         
         if (possibleNotInLeftHand && Time.time - leftHandExitTime > handPutdownDelay)
@@ -51,12 +56,14 @@ public class InHandDetector : MonoBehaviour
             possibleNotInLeftHand = false;
             inLeftHand = false;
             leftHandPutdown.Invoke();
+            anyHandPutdown.Invoke();
         }
         if (possibleNotInRightHand && Time.time - rightHandExitTime > handPutdownDelay)
         {
             possibleNotInRightHand = false;
             inRightHand = false;
             rightHandPutdown.Invoke();
+            anyHandPutdown.Invoke();
         }
     }
 

@@ -20,12 +20,17 @@ public class ObjectGoalProgression : MonoBehaviour
     public UnityEvent on25AwayFromGoal;
     public UnityEvent on50AwayFromGoal;
     public UnityEvent on75AwayFromGoal;
-    public UnityEvent tenSecondsIdle;
+
+    public bool inGoal = false;
     
     private Vector3 startPos;
 
-    private float lastRelDistanceCheckpoint;
+    public float lastRelDistanceCheckpoint;
+    public float relDistance;
+    public String lastEvent = "None";
+    
     private Timer checkpointTimer = new Timer(1);
+    private Timer inGoalTimer = new Timer(1);
     private Timer startTimer = new Timer(1);
 
     private bool running = false;
@@ -36,7 +41,6 @@ public class ObjectGoalProgression : MonoBehaviour
         {
             startPos = transform.position;
             running = true;
-            Debug.Log("Hey Hey");
         });
     }
 
@@ -47,7 +51,7 @@ public class ObjectGoalProgression : MonoBehaviour
         
         var wholeDistance = (goal.transform.position - startPos).magnitude;
         var currentDistance = (goal.transform.position - transform.position).magnitude;
-        var relDistance = currentDistance / wholeDistance;
+        relDistance = currentDistance / wholeDistance;
 
         // Forwards
         if (lastRelDistanceCheckpoint - relDistance > 0.25)
@@ -57,27 +61,38 @@ public class ObjectGoalProgression : MonoBehaviour
             {
                 lastRelDistanceCheckpoint = checkpoint;
                 
-                checkpointTimer.Start(() =>
+                var nextEvent = EventByDistance(checkpoint, true);
+                if (nextEvent.GetPersistentEventCount() > 0)
                 {
-                    EventByDistance(checkpoint, true).Invoke();
-                });
+                    checkpointTimer.Start(() =>
+                    {
+                        lastEvent = "Forward at " + checkpoint;
+                        nextEvent.Invoke();
+                    });
+                }
             }
         }
         // Backwards
         if (lastRelDistanceCheckpoint - relDistance < 0)
         {
-            var checkpoint = Mathf.Round(relDistance * 4) / 4 + 0.25f;
+            var checkpoint = Mathf.Round(relDistance * 4) / 4;
             if (checkpoint < 1.10 && checkpoint > 0.10)
             {
-                lastRelDistanceCheckpoint = checkpoint;
+                lastRelDistanceCheckpoint = checkpoint + 0.25f;
 
-                checkpointTimer.Start(() =>
+                var nextEvent = EventByDistance(checkpoint, false);
+                if (nextEvent.GetPersistentEventCount() > 0)
                 {
-                    EventByDistance(checkpoint, false).Invoke();
-                });
+                    checkpointTimer.Start(() =>
+                    {
+                        lastEvent = "Backwards at " + checkpoint;
+                        nextEvent.Invoke();
+                    });
+                }
             }
         }
         
+        inGoalTimer.Update();
         checkpointTimer.Update();
     }
 
@@ -85,7 +100,6 @@ public class ObjectGoalProgression : MonoBehaviour
     {
         if (forward)
         {
-            Debug.Log("Forward");
             if (distance <= 0.25) return on25TowardsGoal;
             if (distance <= 0.5) return on50TowardsGoal;
             if (distance <= 0.75) return on75TowardsGoal;
@@ -94,7 +108,6 @@ public class ObjectGoalProgression : MonoBehaviour
         }
         else
         {
-            Debug.Log("Backwards");
             if (distance >= 1) return onStartAwayFromGoal;
             if (distance >= 0.75) return on75AwayFromGoal;
             if (distance >= 0.5) return on50AwayFromGoal;
@@ -112,6 +125,11 @@ public class ObjectGoalProgression : MonoBehaviour
     {
         if (other == goal)
         {
+            inGoalTimer.Start(() =>
+            {
+                inGoal = true;
+                onGoalEnter.Invoke();
+            });
         }
     }
     
@@ -119,7 +137,11 @@ public class ObjectGoalProgression : MonoBehaviour
     {
         if (other == goal)
         {
-            
+            inGoalTimer.Start(() =>
+            {
+                inGoal = false;
+                onGoalExit.Invoke();
+            });
         }
     }
 }

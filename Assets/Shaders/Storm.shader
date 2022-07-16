@@ -119,10 +119,12 @@ Shader "Unlit/Storm"
 
                 float totNoise;
                 fixed4 totCol;
+
+                const int count = 3;
                 
                 float sceneDepth = LinearEyeDepth (tex2D(_CameraDepthTexture, i.screenPos.xy / i.screenPos.w).x);
 
-                for (int j = 0; j < 8; j++) {
+                for (int j = 0; j < count; j++) {
                     float2 dir = j % 2 == 0 ? float2( 0.5, -0.2) : float2( -0.7, -0.3);
                     dir = dir * (j % 3 + 1);
                     float2 coord = tornado(intersectCylinder(src, dst, 2 + 0.5*j), dir, 2.) + float2(20.0*j, -5.0*j);
@@ -132,7 +134,7 @@ Shader "Unlit/Storm"
 
                     float3 carth = polarToCarth(coord, 2);
 
-                    float noise = 0.5 + 0.5*octaveNoise(float4(0.3*carth, _Time.y * 0.1), 8, 0.5);
+                    float noise = 0.5 + 0.5*octaveNoise(float4(0.3*carth, _Time.y * 0.1), 4, 0.5);
 
                     float currentDepth = mul(UNITY_MATRIX_MV, carth).z;
 
@@ -167,13 +169,13 @@ Shader "Unlit/Storm"
                 
                 float currentDepth = LinearEyeDepth (i.vertex.z);
                 float viewDepth = (sceneDepth - currentDepth);
-                float opacity1 = getOpacityWithOffset(viewDepth, 0.);
+                float opacity1 = getOpacityWithOffset(viewDepth, 0.1);
 
 
                 opacity = opacity1 * smoothstep(0.7, 0.9, i.uv.x);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return float4(totNoise / 8 * totCol.xyz / 8, opacity);;
+                return float4(totNoise / count * totCol.xyz / count, opacity);;
             }
             ENDCG
         }

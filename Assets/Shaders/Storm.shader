@@ -127,12 +127,15 @@ Shader "Unlit/Storm"
                 for (int j = 0; j < count; j++) {
                     float2 dir = j % 2 == 0 ? float2( 0.5, -0.2) : float2( -0.7, -0.3);
                     dir = dir * (j % 3 + 1);
-                    float2 coord = tornado(intersectCylinder(src, dst, 2 + 0.5*j), dir, 2.) + float2(20.0*j, -5.0*j);
+
+                    float r = 2 + 0.5*j;
+
+                    float2 coord = tornado(intersectCylinder(src, dst, r), dir, r) + float2(20.0*j, -5.0*j);
 
                     fixed4 col = tex2D(_MainTex, coord * float2(7/2/3.141, -0.3));
                     col = lerp(_Col0, _Col1, col.x);
 
-                    float3 carth = polarToCarth(coord, 2);
+                    float3 carth = polarToCarth(coord, r);
 
                     float noise = 0.5 + 0.5*octaveNoise(float4(0.3*carth, _Time.y * 0.1), 4, 0.5);
 

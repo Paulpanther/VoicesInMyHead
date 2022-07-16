@@ -72,7 +72,7 @@ Shader "Custom/SandWavyShader"
 
             float2 coord = 10.* v.texcoord.xy;
 
-            float d = tex2Dlod(_DispTex, float4(coord.xy,0,0)).r * _Displacement;
+            float d = (tex2Dlod(_DispTex, float4(coord.xy,0,0)).r - 0.5) * _Displacement;
             v.vertex.xyz += float3(wave.x, 0., wave.y) + v.normal * d;
         }
 

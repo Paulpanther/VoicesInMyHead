@@ -86,45 +86,94 @@ Shader "Unlit/Storm"
                 return sum;
             }
 
-            float3 tornado(float3 coord, float2 speed, float radius) {
+            float2 tornado(float3 coord, float2 speed, float radius) {
                 float2 polar = float2(atan2(coord.x, coord.z), coord.y) + speed * _Time.y;
 
-                return float3(sin(polar.x) * radius, cos(polar.x) * radius, polar.y);
+                return polar;
+            }
+
+            float3 intersectCylinder(float3 src, float3 dst, float r) {
+                float3 o = src;
+                float3 d = dst - src;
+
+                float3 o2 = o*o;
+                float3 d2 = d*d;
+                float r2 = r*r;
+
+                float t = (sqrt(d2.x * (r2 - o2.z) + d2.z * (r2 - o2.x) + 2*d.z*d.x*o.x*o.z) - d.x*o.x - d.z*o.z) / (d2.x + d2.z);
+
+                return o + t*d;
+            }
+
+            float3 polarToCarth(float2 coord, float radius) {
+
+                return float3(radius*float2(sin(coord.x), cos(coord.x)), coord.y);;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
-                float2 uv1 = i.uv.yx * float2( 5, 10) + float2( 0.5, 0.2) * _Time.y;
-                float2 uv2 = i.uv.yx * float2( 3, 6) + float2( -0.7, 0.3) * _Time.y;
+                float3 src = _WorldSpaceCameraPos;
+                float3 dst = i.worldPos;
+                
+                float opacity;
 
-                fixed4 col1 = tex2D(_MainTex, uv1);
-                fixed4 col2 = tex2D(_MainTex, uv2);
+                float totNoise;
+                fixed4 totCol;
+                
+                float sceneDepth = LinearEyeDepth (tex2D(_CameraDepthTexture, i.screenPos.xy / i.screenPos.w).x);
+
+                for (int j = 0; j < 8; j++) {
+                    float2 dir = j % 2 == 0 ? float2( 0.5, -0.2) : float2( -0.7, -0.3);
+                    dir = dir * (j % 3 + 1);
+                    float2 coord = tornado(intersectCylinder(src, dst, 2 + 0.5*j), dir, 2.) + float2(20.0*j, -5.0*j);
+
+                    fixed4 col = tex2D(_MainTex, coord * float2(7/2/3.141, -0.3));
+                    col = lerp(_Col0, _Col1, col.x);
+
+                    float3 carth = polarToCarth(coord, 2);
+
+                    float noise = 0.5 + 0.5*octaveNoise(float4(0.3*carth, _Time.y * 0.1), 8, 0.5);
+
+                    float currentDepth = mul(UNITY_MATRIX_MV, carth).z;
+
+                    totNoise += noise;
+                    totCol += col;
+
+                    //opacity = getOpacityWithOffset(sceneDepth - currentDepth, 0.);
+                }
+
+                /*
+                float2 coord1 = tornado(i.worldPos, float2( 0.5, -0.2), 2.);
+                float2 coord2 = tornado(intersectCylinder(src, dst, 2.2), float2( -0.7, -0.3), 2.);
+
+                fixed4 col1 = tex2D(_MainTex, coord1 * float2(5/2/3.141, -2));
+                fixed4 col2 = tex2D(_MainTex, coord2 * float2( 10/2/3.141, -1.5));
 
                 col1 = lerp(_Col0, _Col1, col1.x);
                 col2 = lerp(_Col0, _Col1, col2.x);
 
-                float sceneDepth = LinearEyeDepth (tex2D(_CameraDepthTexture, i.screenPos.xy / i.screenPos.w).x);
                 float currentDepth = LinearEyeDepth (i.vertex.z);
                 float viewDepth = (sceneDepth - currentDepth);
 
-                float3 coord1 = tornado(i.worldPos, float2( 0.5, 0.2), 2.);
-                float3 coord2 = tornado(i.worldPos, float2( -0.7, 0.3), 2.);
-
-                float noise1 = 0.5 + 0.5*octaveNoise(float4(0.3*coord1, _Time.y * 0.1), 8, 0.5);
-                float noise2 = 0.5 + 0.5*octaveNoise(float4(0.2*coord2, _Time.y * 0.07), 8, 0.5);
+                float noise1 = 0.5 + 0.5*octaveNoise(float4(0.3*polarToCarth(coord1, 2), _Time.y * 0.1), 8, 0.5);
+                float noise2 = 0.5 + 0.5*octaveNoise(float4(0.2*polarToCarth(coord2, 3), _Time.y * 0.07), 8, 0.5);
                 float noise = 0.5 + 0.5 * sqrt(pow(noise1, 4) + pow(noise2, 4));
 
                 float opacity1 = getOpacityWithOffset(viewDepth, noise1);
                 float opacity2 = getOpacityWithOffset(viewDepth, 1 + noise2);
 
-                fixed4 col = lerp(col1, col2, opacity2 / (opacity1 + opacity2));
+                fixed4 col = lerp(col1, col2, opacity2 / (opacity1 + opacity2));*/
+
+                
+                float currentDepth = LinearEyeDepth (i.vertex.z);
+                float viewDepth = (sceneDepth - currentDepth);
+                float opacity1 = getOpacityWithOffset(viewDepth, 0.);
 
 
-                float opacity = opacity1 * smoothstep(0.7, 0.9, i.uv.x);
+                opacity = opacity1 * smoothstep(0.7, 0.9, i.uv.x);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return float4(noise * col.xyz, opacity);;
+                return float4(totNoise / 8 * totCol.xyz / 8, opacity);;
             }
             ENDCG
         }

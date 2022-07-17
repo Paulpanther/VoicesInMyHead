@@ -12,7 +12,7 @@ public class Bunny : MonoBehaviour
     public UnityEvent onPutDown;
     public UnityEvent onUpEnough;
 
-    public float goalHeight = 3;
+    public float goalHeight = 1.5f;
 
     public TimePassedDetector timePassed;
 
@@ -23,7 +23,7 @@ public class Bunny : MonoBehaviour
 
     public void HandOff()
     {
-        var height = transform.position.z;
+        var height = transform.position.y;
         Debug.Log(height);
         if (height < 0.2)
         {

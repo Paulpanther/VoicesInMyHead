@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class TimePassedDetector : MonoBehaviour
 {
     public float time;
+    public float firstTime;
     public UnityEvent doEveryTime;
     public UnityEvent doEveryTimeIfInHand;
     public UnityEvent doEveryTimeIfNotInHandInGoal;
@@ -21,7 +22,7 @@ public class TimePassedDetector : MonoBehaviour
     {
         handDetector = GetComponent<InHandDetector>();
         
-        timer = new Timer(time);
+        timer = new Timer(firstTime);
         Action action = () => {};
         action = () =>
         {
@@ -41,6 +42,7 @@ public class TimePassedDetector : MonoBehaviour
                 }
             }
             doEveryTime.Invoke();
+            timer = new Timer(time);
             timer.Start(action);
         };
         timer.Start(action);

@@ -38,7 +38,7 @@ public class Face : MonoBehaviour
             }
             else
             {
-                parent.GetComponent<SteamVR_TrackedObject>().enabled = false;
+                parent.GetComponent<SteamVR_TrackedObject>().enabled = true;
             }
         }
     }
@@ -48,7 +48,7 @@ public class Face : MonoBehaviour
         if (goalTime > Time.time)
         {
             var wholeTime = goalTime - startTime;
-            var current = goalTime - Time.time;
+            var current = Time.time - startTime;
             var delta = current / wholeTime;
             parent.transform.position = Vector3.Lerp(startPos, currentGoalPos, delta);
         }

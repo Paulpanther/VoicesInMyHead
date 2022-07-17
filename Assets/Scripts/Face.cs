@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
 public class Face : MonoBehaviour
 {
@@ -14,6 +15,14 @@ public class Face : MonoBehaviour
     public float goalTime;
     public float startTime;
     public float animationTime = 1;
+    public Transform parent;
+
+    public void Start()
+    {
+        parent.GetComponent<SteamVR_TrackedObject>().enabled = false;
+        parent.transform.position = positions[0].position;
+        lastTeleportPos++;
+    }
 
     public void OnTriggerEnter(Collider other)
     {
@@ -24,7 +33,12 @@ public class Face : MonoBehaviour
                 var nextPos = positions[lastTeleportPos++];
                 currentGoalPos = nextPos.position;
                 goalTime = Time.time + animationTime;
-                startPos = transform.position;
+                startTime = Time.time;
+                startPos = parent.transform.position;
+            }
+            else
+            {
+                parent.GetComponent<SteamVR_TrackedObject>().enabled = false;
             }
         }
     }
@@ -36,7 +50,7 @@ public class Face : MonoBehaviour
             var wholeTime = goalTime - startTime;
             var current = goalTime - Time.time;
             var delta = current / wholeTime;
-            transform.position = Vector3.Lerp(startPos, currentGoalPos, delta);
+            parent.transform.position = Vector3.Lerp(startPos, currentGoalPos, delta);
         }
     }
 

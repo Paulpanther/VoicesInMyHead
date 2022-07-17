@@ -10,7 +10,7 @@ public class AchievementEnable : MonoBehaviour
     
     void Start()
     {
-        this.enabled = false;
+        gameObject.SetActive(false);
         timer = new Timer(time);
     }
 
@@ -22,10 +22,10 @@ public class AchievementEnable : MonoBehaviour
 
     public void ShowAchievement()
     {
-        enabled = true;
+        gameObject.SetActive(true);
         timer.Start(() =>
         {
-            enabled = false;
+            gameObject.SetActive(false);
         });
     }
 }

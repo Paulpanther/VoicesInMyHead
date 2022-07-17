@@ -31,6 +31,7 @@ public class LootboxEat : MonoBehaviour
         {
             timer.Start(() =>
             {
+                other.gameObject.SetActive(false);
                 hasEaten = true;
                 timePassedDetector.externInGoal = true;
                 doOnEat.Invoke();

@@ -16,6 +16,7 @@ public class Lootchest : MonoBehaviour
     private float animationStart = 0;
     private float animationDuration = 5;
     private bool isAnimated = false;
+    private bool hasEaten = false;
 
     // Start is called before the first frame update
     void Start()
@@ -34,8 +35,16 @@ public class Lootchest : MonoBehaviour
         }
     }
 
+    public void OnEat()
+    {
+        hasEaten = true;
+        OnPlayerLeave();
+    }
+
     public void OnPlayerIsNear()
     {
+        if (hasEaten) return;
+        
         onOpen.Invoke();
         target = -140f;
         animationStart = Time.time;

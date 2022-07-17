@@ -10,7 +10,7 @@ public class Chair : MonoBehaviour
     public float timeOverChair = 8;
     public UnityEvent sitOnChair;
     public TimePassedDetector timePassed;
-    private Timer timer;
+    private Timer timer = new Timer(0);
     public bool wasSitting = false;
     
     void Start()

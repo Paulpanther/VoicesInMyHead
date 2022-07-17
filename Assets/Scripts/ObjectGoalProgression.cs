@@ -55,9 +55,9 @@ public class ObjectGoalProgression : MonoBehaviour
         var wholeDistance = (goal.transform.position - startPos).magnitude;
         var currentDistance = (goal.transform.position - transform.position).magnitude;
         relDistance = currentDistance / wholeDistance;
-
+        
         // Forwards
-        if (lastRelDistanceCheckpoint - relDistance > 0.25)
+        if (!inGoal && lastRelDistanceCheckpoint - relDistance > 0.25)
         {
             var checkpoint = Mathf.Round(relDistance * 4) / 4;
             if (checkpoint < 1.10 && checkpoint > 0.10)
@@ -76,7 +76,7 @@ public class ObjectGoalProgression : MonoBehaviour
             }
         }
         // Backwards
-        if (lastRelDistanceCheckpoint - relDistance < 0)
+        if (!inGoal && lastRelDistanceCheckpoint - relDistance < 0)
         {
             var checkpoint = Mathf.Round(relDistance * 4) / 4;
             if (checkpoint < 1.10 && checkpoint > 0.10)
@@ -141,12 +141,12 @@ public class ObjectGoalProgression : MonoBehaviour
     {
         if (other == goal)
         {
-            inGoalTimer.Start(() =>
-            {
-                inGoal = false;
-                if (timePassedDetector != null) timePassedDetector.externInGoal = false;
-                onGoalExit.Invoke();
-            });
+            //inGoalTimer.Start(() =>
+            //{
+                //inGoal = false;
+                //if (timePassedDetector != null) timePassedDetector.externInGoal = false;
+                //onGoalExit.Invoke();
+            //});
         }
     }
 }

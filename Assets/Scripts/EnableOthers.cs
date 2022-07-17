@@ -8,7 +8,7 @@ public class EnableOthers : MonoBehaviour
 {
     public GameObject obj;
     public float delay = 5;
-    private Timer timer;
+    private Timer timer = new Timer(0);
     
     public void DoEnable()
     {

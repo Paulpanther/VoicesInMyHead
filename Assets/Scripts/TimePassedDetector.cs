@@ -15,7 +15,7 @@ public class TimePassedDetector : MonoBehaviour
     public UnityEvent doEveryTimeIfNotInHandNotInGoal;
     
     public InHandDetector handDetector;
-    private Timer timer;
+    private Timer timer = new Timer(0);
     public bool externInGoal = false;
     
     void Start()

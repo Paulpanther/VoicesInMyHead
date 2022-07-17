@@ -14,6 +14,7 @@ public class Bunny : MonoBehaviour
 
     public float goalHeight = 1.5f;
 
+    public float height;
     public TimePassedDetector timePassed;
 
     public void Start()
@@ -23,8 +24,8 @@ public class Bunny : MonoBehaviour
 
     public void HandOff()
     {
-        var height = transform.position.y;
-        Debug.Log(height);
+        height = transform.position.y;
+        
         if (height < 0.2)
         {
             onPutDown.Invoke();

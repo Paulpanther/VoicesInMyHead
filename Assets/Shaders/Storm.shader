@@ -12,7 +12,8 @@ Shader "Unlit/Storm"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+        Cull back 
         LOD 100
 
         

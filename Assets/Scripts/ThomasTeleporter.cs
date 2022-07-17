@@ -27,8 +27,8 @@ public class ThomasTeleporter : MonoBehaviour
         var radius = Random.Range(minDistance, maxDistance);
         var theta = Random.Range(0, 2 * Mathf.PI);
 
-        var x = radius * cos(theta);
-        var y = radius * sin(theta);
+        var x = radius * Mathf.Cos(theta);
+        var y = radius * Mathf.Sin(theta);
         transform.position = new Vector3(x, y, transform.position.z);
         transform.eulerAngles = new Vector3(0, 0, -(Mathf.Rad2Deg * theta));
 

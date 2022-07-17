@@ -15,7 +15,7 @@ public class PlayAreaCornerScript : MonoBehaviour
     void Start()
     {
         var error = EVRInitError.None;
-        OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
+        // OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
         OpenVR.Chaperone.ForceBoundsVisible(true);
         OpenVR.Chaperone.GetPlayAreaRect(ref playAreaRect);
         

@@ -21,7 +21,10 @@ public class TimePassedDetector : MonoBehaviour
     void Start()
     {
         handDetector = GetComponent<InHandDetector>();
-        
+    }
+
+    public void OnEnable()
+    {
         timer = new Timer(firstTime);
         Action action = () => {};
         action = () =>

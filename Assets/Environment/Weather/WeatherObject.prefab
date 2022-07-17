@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7067979051271201703}
   - component: {fileID: -4798100556444214072}
+  - component: {fileID: 8976978890178247477}
   m_Layer: 0
   m_Name: WeatherObject
   m_TagString: Untagged
@@ -46,3 +47,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propability: 0
   lightningPrefab: {fileID: 3634608773282349075, guid: 794593d08a4de9b48816ede70a69557d, type: 3}
+--- !u!114 &8976978890178247477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3022358472378321841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd21985b3905dc342b106a7c12b7c645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnHeight: 70
+  areaSize: 100
+  spawnRate: 0.3
+  whalePrefab: {fileID: 1468062190912194678, guid: 52652af6a1372ef4897c12ebbfc598ad, type: 3}
